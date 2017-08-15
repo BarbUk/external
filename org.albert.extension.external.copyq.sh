@@ -39,7 +39,7 @@ build_json() {
     read -r -d '' json << EOM
 {
     "name": "$row",
-    "icon": "/usr/share/icons/hicolor/scalable/apps/copyq-normal.svg",
+    "icon": "copyq-normal",
     "description": "$count",
     "actions": [{
         "name": "copy $row to clipboard",
@@ -97,17 +97,22 @@ main() {
             exit 0
         ;;
         "INITIALIZE")
-    	    exit 0
-    	;;
-  	    "FINALIZE")
-    	    exit 0
-    	;;
-  	    "SETUPSESSION")
-    	    exit 0
-    	;;
-  	    "TEARDOWNSESSION")
-    	    exit 0
-    	;;
+            if ! which copyq >/dev/null 2>&1; then
+                echo "You need to install copyq" >&2
+                exit 1
+            fi
+
+            exit 0
+        ;;
+        "FINALIZE")
+            exit 0
+        ;;
+        "SETUPSESSION")
+            exit 0
+        ;;
+        "TEARDOWNSESSION")
+            exit 0
+        ;;
     esac
 }
 
