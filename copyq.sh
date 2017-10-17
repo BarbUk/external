@@ -39,10 +39,10 @@ copyq_get_row() {
     local count="$1"
 
     ## I take just the first line, in case there is a block of text
-    copyq_row="$(copyq read text/plain "$count" | tr -d '\n' | sed -e 's/^[[:space:]]*//')"
+    copyq_row="$(copyq read text/plain "$count" | tr '\n' ' ' | sed -e 's/^[[:space:]]*//')"
 
     # clean from non compatible json char
-    printf -v clean_copyq_row "%q" "$copyq_row"
+    printf -v clean_copyq_row "%q" "${copyq_row:0:100}"
     echo -n "$clean_copyq_row"
 }
 
@@ -55,6 +55,7 @@ build_json() {
     read -r -d '' json << EOM
 {
     "name": "$row",
+    "description": "${count}: $row",
     "icon": "copyq-normal",
     "actions": [
         {
@@ -83,8 +84,8 @@ build_albert_query() {
     ## If there is a query, search for it
     if [ -n "$query" ]; then
         ids=$(copyq_search_row "$query")
-    else # else get the last 20 items
-        ids=$(seq 0 19)
+    else # else get the last 15 items
+        ids=$(seq 0 14)
     fi
     for id in $ids; do
         row=$(copyq_get_row "$id")
